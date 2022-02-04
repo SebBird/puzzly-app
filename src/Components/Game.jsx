@@ -1,22 +1,29 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Test from '../Assets/Test.png'
 import Tiles from './Tiles';
 import Button from './Button';
 import { fetchPuzzlePicture } from '../Functions/fetchPuzzlePicture';
 import { createGrid } from '../Functions/createGrid';
 
-const StyledDiv = styled.div`
+const Header = styled.header`
+`;
+
+const GameContainer = styled.div`
 display: flex;
 justify-content: flex-start;
 align-items: flex-start;
 flex-wrap: wrap;
-height: 600px;
-width: 600px;
+margin: 0;
+height: 800px;
+width: 800px;
+background-color: #4d4d4d;
+padding: 5px;
+transform: scale(0.5);
 `;
 
+let gridSize = 8;
+
 const Picture = () => {
-    let gridSize = 6;
     let [pictureBG, setPictureBG] = useState("");
     let [pictureGrid, setPictureGrid] = useState([]);
     let [gameWon, setGameWon] = useState(false);
@@ -26,6 +33,7 @@ const Picture = () => {
         newPictureGrid[tile].numberOfRotations = numberOfRotations+1;
         newPictureGrid[tile].rotation = `rotate(${(numberOfRotations+1)*90}deg)`;
         setPictureGrid(newPictureGrid);
+        checkIfGameWon(newPictureGrid);
     }
 
     const shuffleTiles = () => {
@@ -34,6 +42,14 @@ const Picture = () => {
             console.log(tile);
             handleRotation(tile.originalPosition, Math.floor(Math.random()*4));
         })
+    }
+
+    const checkIfGameWon = (grid) => {
+        let isGameWon = true;
+        grid.forEach((tile) => {
+            if (tile.numberOfRotations%4!==0) isGameWon = false;
+        })
+        setGameWon(isGameWon);
     }
 
     useEffect(() => {
@@ -46,14 +62,20 @@ const Picture = () => {
     }, [])
 
         return ( 
-            <StyledDiv >
-                <Tiles 
-                background={pictureBG}
-                grid={pictureGrid}
-                onRotate={handleRotation}/>
+            <>
+                <Header>
+                    <h1>Puzzly</h1>
+                </Header>
+                <GameContainer >
+                    <Tiles 
+                    background={pictureBG}
+                    grid={pictureGrid}
+                    onRotate={handleRotation}/>
+                </GameContainer>
                 <Button wording={"Shuffle"} fn={shuffleTiles}/>
+                <p>{gameWon.toString()}</p>
                 <img src={pictureBG} alt="" />
-            </StyledDiv>
+            </>
         );
 }
  

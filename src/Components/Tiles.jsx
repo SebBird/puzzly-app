@@ -11,9 +11,9 @@ transition: transform 0.25s ease-in-out;
 border-radius: ${props => props.borderRadius};
 transform: ${props => props.rotation};
 &:hover {
-    box-shadow: inset 0 0 1px 3px #ea00ff;
-    }
-
+    box-shadow: inset 0 0 1px 3px #e7e7e7;
+}
+cursor: pointer;
 `;
 
 const Tiles = ({background, grid, onRotate}) => {
