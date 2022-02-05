@@ -8,14 +8,33 @@ import { createGrid } from "../Functions/createGrid";
 const PageDiv = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+`;
+
+const HeaderDiv = styled.header`
+  display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 `;
 
 const Header = styled.header`
-  letter-spacing: 0.4rem;
-  padding: 1rem 0;
+  letter-spacing: 0.6rem;
+  padding: 2rem 0;
   user-select: none;
+  h1 {
+    display: inline-block;
+    transition: all 0.5s;
+    transform: ${(props) =>
+      props.gameWon ? "rotate(360deg)" : "rotate(0deg)"};
+    color: ${(props) =>
+      props.gameWon
+        ? `#${Math.floor(Math.random() * 16777215).toString(16)}`
+        : "white"};
+    text-shadow: ${(props) => (props.gameWon ? `1px 1px 2px white` : "")};
+  }
 `;
 
 const GameContainer = styled.div`
@@ -30,6 +49,7 @@ const GameContainer = styled.div`
   box-shadow: 0 0 10px 10px #131313;
   padding: 15px;
   border-radius: 30px;
+  transform-origin: top;
   @media (max-width: 1024px) {
     transform: scale(0.8);
   }
@@ -40,6 +60,9 @@ const GameContainer = styled.div`
     transform: scale(0.6);
   }
   @media (max-width: 500px) {
+    transform: scale(0.5);
+  }
+  @media (max-width: 375px) {
     transform: scale(0.4);
   }
   @media (max-width: 320px) {
@@ -64,11 +87,10 @@ const Picture = () => {
     checkIfGameWon(newPictureGrid);
   };
 
-  const shuffleTiles = () => {
+  const resolvePuzzle = () => {
     let newPictureGrid = [...pictureGrid];
     newPictureGrid.forEach((tile) => {
-      console.log(tile);
-      handleRotation(tile.originalPosition, Math.floor(Math.random() * 4));
+      handleRotation(tile.originalPosition, -1);
     });
   };
 
@@ -91,9 +113,17 @@ const Picture = () => {
 
   return (
     <PageDiv>
-      <Header>
-        <h1>PUZZLY</h1>
-      </Header>
+      <HeaderDiv>
+        <Header gameWon={gameWon}>
+          <h1>P</h1>
+          <h1>U</h1>
+          <h1>Z</h1>
+          <h1>Z</h1>
+          <h1>L</h1>
+          <h1>Y</h1>
+        </Header>
+        <Button wording={"Click to resolve"} fn={resolvePuzzle} />
+      </HeaderDiv>
       <GameContainer>
         <Tiles
           background={pictureBG}
@@ -101,8 +131,6 @@ const Picture = () => {
           onRotate={handleRotation}
         />
       </GameContainer>
-      <Button wording={"Shuffle"} fn={shuffleTiles} />
-      <p>{gameWon.toString()}</p>
     </PageDiv>
   );
 };

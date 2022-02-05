@@ -31,6 +31,7 @@ const Tiles = ({ background, grid, onRotate }) => {
         }) => {
           return (
             <TilePiece
+              key={originalPosition}
               background={background}
               positionX={positionX}
               positionY={positionY}
