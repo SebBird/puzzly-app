@@ -1,12 +1,13 @@
 * {
   margin: 0;
-  font-family: "Supermercado One", cursive;
+  font-family: "Roboto Slab", serif;
+  color: aliceblue;
 }
 
 body {
   margin: 0;
+  background-color: #202020;
 }
 
 div {
-  background-color: #202020;
 }
