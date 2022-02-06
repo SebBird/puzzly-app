@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import Tiles from "./Tiles";
-import Button from "./Button";
+import styled, { keyframes } from "styled-components";
 import { fetchPuzzlePicture } from "../Functions/fetchPuzzlePicture";
 import { createGrid } from "../Functions/createGrid";
+import Tiles from "./Tiles";
+import Button from "./Button";
+import LoadingIcon from "../Assets/loading.svg";
 
 const PageDiv = styled.div`
   display: flex;
@@ -20,24 +21,44 @@ const HeaderDiv = styled.header`
   overflow: hidden;
 `;
 
+const victoryAnimation = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.85);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+const loadingAnimation = keyframes`
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+`;
+
 const Header = styled.header`
   letter-spacing: 0.6rem;
   padding: 2rem 0;
   user-select: none;
+  animation-name: ${({ gameWon }) => (gameWon ? victoryAnimation : "")};
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
   h1 {
     display: inline-block;
     transition: all 0.5s;
     transform: ${(props) =>
       props.gameWon ? "rotate(360deg)" : "rotate(0deg)"};
-    color: ${(props) =>
-      props.gameWon
-        ? `#${Math.floor(Math.random() * 16777215).toString(16)}`
-        : "white"};
-    text-shadow: ${(props) => (props.gameWon ? `1px 1px 2px white` : "")};
   }
 `;
 
 const GameContainer = styled.div`
+  position: relative;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -49,6 +70,7 @@ const GameContainer = styled.div`
   box-shadow: 0 0 10px 10px #131313;
   padding: 15px;
   border-radius: 30px;
+  text-align: center;
   transform-origin: top;
   @media (max-width: 1024px) {
     transform: scale(0.8);
@@ -70,11 +92,31 @@ const GameContainer = styled.div`
   }
 `;
 
+const LoadingMsg = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: 300;
+  visibility: ${({ loaded }) => (loaded ? "hidden" : "visible")};
+  font-size: 2rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  img {
+    width: 5rem;
+    padding: 1rem;
+    filter: contrast(0%);
+    animation: ${loadingAnimation} 2s linear infinite;
+  }
+`;
+
 let gridSize = 7;
 
 const Picture = () => {
   let [pictureBG, setPictureBG] = useState("");
-  let [pictureGrid, setPictureGrid] = useState([]);
+  let [pictureGrid, setPictureGrid] = useState("");
   let [gameWon, setGameWon] = useState(false);
 
   const handleRotation = (tile, numberOfRotations) => {
@@ -125,10 +167,16 @@ const Picture = () => {
         <Button wording={"Click to resolve"} fn={resolvePuzzle} />
       </HeaderDiv>
       <GameContainer>
+        <LoadingMsg loaded={pictureBG}>
+          <p>Loading</p>
+          <img src={LoadingIcon} alt="" />
+          <p>Please refresh page if puzzle fails to load.</p>
+        </LoadingMsg>
         <Tiles
           background={pictureBG}
           grid={pictureGrid}
           onRotate={handleRotation}
+          gameWon={gameWon}
         />
       </GameContainer>
     </PageDiv>
