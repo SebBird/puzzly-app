@@ -14,7 +14,7 @@ export const createGrid = (gridSize) => {
     if (i === amountOfGridTiles - 1) tileBorderRadius[2] = borderRadius;
     if (i === amountOfGridTiles - gridSize) tileBorderRadius[3] = borderRadius;
 
-    let rotations = Math.floor(Math.random() * 4);
+    let rotations = Math.floor(Math.random() * 4) + 1;
 
     pictureGrid.push({
       originalPosition: i,
