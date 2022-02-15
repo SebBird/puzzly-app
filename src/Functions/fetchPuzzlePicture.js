@@ -6,4 +6,4 @@ export const fetchPuzzlePicture = async(gridSize) => {
         .then(data => data.url);
 
     return url;
-}
+};
